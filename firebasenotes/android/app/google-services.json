@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "333715603909",
+    "project_id": "crudtest-8a1d0",
+    "storage_bucket": "crudtest-8a1d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333715603909:android:1abcf9e2bc67f0d8970bac",
+        "android_client_info": {
+          "package_name": "com.example.firebasenotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvA3LfHNlWnmOGlyGLjMx2aXwtevhUN24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
