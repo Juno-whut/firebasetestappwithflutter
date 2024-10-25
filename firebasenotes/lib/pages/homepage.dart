@@ -26,13 +26,8 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () {
               // add new note
-              try {
-                firestoreService.addNote(textController.text);
-                }
-              catch (e) {
-                print(e);
-              }
-
+              firestoreService.addNote(textController.text);
+               
               // clear text field
               textController.clear();
 
