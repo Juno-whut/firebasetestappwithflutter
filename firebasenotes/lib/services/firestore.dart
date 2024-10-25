@@ -15,7 +15,11 @@ class FirestoreService {
   }
  
   // Read: get notes from db
+  Stream<QuerySnapshot> getNotes() {
+    final notesStream = notes.orderBy('timestap', descending: true).snapshots();
 
+    return notesStream;
+  }
   // Update: update notes in db given doc id
 
   // Delete: delete notes from db given doc id
