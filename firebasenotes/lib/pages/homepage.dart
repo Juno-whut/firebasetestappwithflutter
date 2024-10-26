@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebasenotes/services/firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController textController = TextEditingController();
 
   // open dialog box to add note
-  void openNoteBox() {
+  void openNoteBox({String? docID}) {
     showDialog(context: context, builder: (context) => AlertDialog(
       content: TextField(
         controller: textController,
@@ -25,8 +26,12 @@ class _HomePageState extends State<HomePage> {
           // button to save
           ElevatedButton(
             onPressed: () {
-              // add new note
-              firestoreService.addNote(textController.text);
+              // update or add new note
+              if (docID == null) {
+                firestoreService.addNote(textController.text);
+              } else {
+                firestoreService.updateNote(docID, textController.text);
+              }
                
               // clear text field
               textController.clear();
@@ -44,13 +49,67 @@ class _HomePageState extends State<HomePage> {
     @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notes')),
+      appBar: AppBar(
+        title: const Text(
+          'Notes',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+          ),
+          ),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurpleAccent,
+        ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: openNoteBox,
         child: const Icon(Icons.add),
         ),
-    );
-  }
+        body: StreamBuilder<QuerySnapshot>(
+          stream: firestoreService.getNotesStream(),
+          builder: (context, snapshot) {
+            // if we have data, get all docs
+            if (snapshot.hasData) {
+              List notesList = snapshot.data!.docs;
+
+              // display as list
+              return ListView.builder(
+                itemCount: notesList.length,
+                itemBuilder: (context, index) {
+                  // get doc
+                  DocumentSnapshot document = notesList[index];
+                  String docID = document.id;
+
+                  // get note in doc
+                  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                  String noteText = data['note'];
+
+                  // display as list tile
+                  return ListTile(
+                    title: Text(noteText),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // update button
+                        IconButton(
+                      onPressed: () => openNoteBox(docID: docID), 
+                      icon: const Icon(Icons.settings),
+                      ),
+                      IconButton(
+                      onPressed: () => firestoreService.deleteNote(docID), 
+                      icon: const Icon(Icons.delete),
+                      ),
+                    ])
+                  );
+                },
+              );
+            } else {
+              return const Text("No Notes...");
+            }
+          },
+        ),
+      );
+    }
   }
 
   
